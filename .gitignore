@@ -1,0 +1,8 @@
+# .gitignore
+.DS_Store
+config/db.php
+node_modules/
+vendor/
+*.log
+uploads/
+/tmp/
