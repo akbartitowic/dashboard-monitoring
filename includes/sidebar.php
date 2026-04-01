@@ -15,18 +15,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i data-lucide="home" class="w-4 h-4"></i>
             <span class="text-sm font-medium">Dashboard</span>
         </a>
-        <a href="chat.php" class="flex items-center gap-3 px-4 py-2.5 rounded-md transition-colors <?= ($current_page == 'chat.php') ? 'sidebar-item-active' : 'text-zinc-400 hover:text-white' ?>">
-            <i data-lucide="message-square" class="w-4 h-4"></i>
-            <span class="text-sm font-medium">AI Agent Chat</span>
-        </a>
-        <a href="projects.php" class="flex items-center gap-3 px-4 py-2.5 rounded-md transition-colors <?= ($current_page == 'projects.php') ? 'sidebar-item-active' : 'text-zinc-400 hover:text-white' ?>">
-            <i data-lucide="code" class="w-4 h-4"></i>
-            <span class="text-sm font-medium">Project Space</span>
-        </a>
-        <a href="monitoring.php" class="flex items-center gap-3 px-4 py-2.5 rounded-md transition-colors <?= ($current_page == 'monitoring.php') ? 'sidebar-item-active' : 'text-zinc-400 hover:text-white' ?>">
-            <i data-lucide="activity" class="w-4 h-4"></i>
-            <span class="text-sm font-medium">Server Health</span>
-        </a>
     </nav>
 
     <div class="absolute bottom-8 left-0 w-full px-4 pt-10">

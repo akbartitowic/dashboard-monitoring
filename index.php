@@ -74,78 +74,53 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Projects Card -->
+        <!-- Running Apps Card -->
         <div class="glass p-6 rounded-2xl border border-accent hover:border-zinc-700 transition-all group">
             <div class="flex justify-between items-start mb-4">
-                <div class="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl">
-                    <i data-lucide="folder-kanban" class="w-6 h-6"></i>
+                <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                    <i data-lucide="layout-grid" class="w-6 h-6"></i>
                 </div>
-                <a href="projects.php" class="text-xs text-blue-400 hover:underline">Manage</a>
+                <span class="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Live
+                </span>
             </div>
-            <h3 class="text-zinc-400 text-sm font-medium">Total Projects</h3>
+            <h3 class="text-zinc-400 text-sm font-medium">Running Apps</h3>
             <div class="flex items-baseline gap-2 mt-1">
-                <span id="projects-val" class="text-3xl font-bold font-heading">--</span>
+                <span id="apps-val" class="text-3xl font-bold font-heading">--</span>
                 <span class="text-zinc-500 text-sm">Active</span>
             </div>
-            <div class="mt-4 flex -space-x-2">
-                <div class="w-8 h-8 rounded-full border-2 border-[#09090b] bg-zinc-800"></div>
-                <div class="w-8 h-8 rounded-full border-2 border-[#09090b] bg-zinc-700"></div>
-                <div class="w-8 h-8 rounded-full border-2 border-[#09090b] bg-zinc-600 flex items-center justify-center text-[10px]">+</div>
+            <div class="w-full bg-zinc-800 h-1.5 rounded-full mt-4 overflow-hidden">
+                <div id="apps-bar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 100%"></div>
             </div>
         </div>
     </div>
 
-    <!-- Active Projects Table -->
+    <!-- Active Applications Table -->
     <div class="glass rounded-2xl border border-accent overflow-hidden">
         <div class="p-6 border-b border-accent flex justify-between items-center">
-            <h2 class="text-xl font-bold font-heading">Active Projects</h2>
-            <button class="px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-zinc-200 transition-colors">
-                New Project
-            </button>
+            <h2 class="text-xl font-bold font-heading">Active Applications</h2>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-zinc-500">Live Updates</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left" id="apps-table">
                 <thead>
                     <tr class="bg-zinc-900/50 text-zinc-400 text-xs uppercase tracking-wider">
-                        <th class="px-6 py-4 font-medium">Name</th>
-                        <th class="px-6 py-4 font-medium">Status</th>
-                        <th class="px-6 py-4 font-medium">Domain</th>
-                        <th class="px-6 py-4 font-medium text-right">Action</th>
+                        <th class="px-6 py-4 font-medium">App Name</th>
+                        <th class="px-6 py-4 font-medium">CPU %</th>
+                        <th class="px-6 py-4 font-medium">RAM %</th>
+                        <th class="px-6 py-4 font-medium">Uptime</th>
+                        <th class="px-6 py-4 font-medium text-right">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-zinc-800/50">
-                    <?php
-                    $stmt = $pdo->query("SELECT * FROM projects ORDER BY last_update DESC LIMIT 5");
-                    while ($row = $stmt->fetch()) {
-                        $status_color = match($row['status']) {
-                            'active' => 'text-emerald-400 bg-emerald-400/10',
-                            'deploying' => 'text-blue-400 bg-blue-400/10 animate-pulse',
-                            default => 'text-zinc-400 bg-zinc-400/10'
-                        };
-                    ?>
-                    <tr class="hover:bg-zinc-800/30 transition-colors group">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></div>
-                                <span class="font-medium"><?= htmlspecialchars($row['name']) ?></span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-sm">
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium <?= $status_color ?>">
-                                <?= ucfirst($row['status']) ?>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-zinc-400 font-mono">
-                            <?= htmlspecialchars($row['subdomain']) ?>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="vibe_coding.php?id=<?= $row['id'] ?>" class="text-xs font-semibold text-white/50 hover:text-white transition-colors flex items-center justify-end gap-2">
-                                Vibe Code
-                                <i data-lucide="chevron-right" class="w-3 h-3"></i>
-                            </a>
-                        </td>
+                <tbody class="divide-y divide-zinc-800/50" id="apps-list">
+                    <!-- Dynamic Content -->
+                    <tr class="animate-pulse">
+                        <td colspan="4" class="px-6 py-12 text-center text-zinc-500">Loading applications...</td>
                     </tr>
-                    <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -163,7 +138,13 @@ async function updateStats() {
         document.getElementById('cpu-val').innerText = data.cpu;
         document.getElementById('ram-val').innerText = data.ram;
         document.getElementById('temp-val').innerText = data.temp;
-        document.getElementById('projects-val').innerText = data.projects;
+        if (document.getElementById('apps-val')) {
+            document.getElementById('apps-val').innerText = data.running_apps;
+        }
+        if (document.getElementById('apps-bar')) {
+            const percentage = Math.min((data.running_apps / 30) * 100, 100);
+            document.getElementById('apps-bar').style.width = percentage + '%';
+        }
         
         // Update bars
         document.getElementById('cpu-bar').style.width = data.cpu + '%';
@@ -176,9 +157,55 @@ async function updateStats() {
     }
 }
 
-// Update every 3 seconds
+async function updateAppsList() {
+    try {
+        const response = await fetch('api/apps.php');
+        const apps = await response.json();
+        const list = document.getElementById('apps-list');
+        
+        if (!list) return;
+
+        if (apps.length === 0) {
+            list.innerHTML = `<tr><td colspan="4" class="px-6 py-12 text-center text-zinc-500">No active applications found.</td></tr>`;
+            return;
+        }
+
+        list.innerHTML = apps.map(app => `
+            <tr class="hover:bg-zinc-800/30 transition-colors group">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></div>
+                        <span class="font-medium text-sm text-zinc-100">${app.name}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-xs font-mono">
+                    <span class="${parseFloat(app.cpu) > 10 ? 'text-orange-400' : 'text-zinc-400'}">${app.cpu}%</span>
+                </td>
+                <td class="px-6 py-4 text-xs font-mono">
+                    <span class="${parseFloat(app.mem) > 5 ? 'text-purple-400' : 'text-zinc-400'}">${app.mem}%</span>
+                </td>
+                <td class="px-6 py-4 text-xs text-zinc-500">
+                    ${app.uptime}
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold text-emerald-400 bg-emerald-400/10 uppercase tracking-tighter">
+                        Active
+                    </span>
+                </td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        console.error('Failed to fetch apps:', e);
+    }
+}
+
+// Update stats every 3 seconds
 setInterval(updateStats, 3000);
 updateStats();
+
+// Update apps every 10 seconds
+setInterval(updateAppsList, 10000);
+updateAppsList();
 </script>
 
 <?php include 'includes/footer.php'; ?>

@@ -81,8 +81,5 @@
 </head>
 <body class="min-h-screen grid-bg overflow-x-hidden">
     <div class="flex">
-        <!-- Sidebar -->
-        <?php include 'sidebar.php'; ?>
-
         <!-- Main Content -->
-        <main class="flex-1 p-8 ml-64">
+        <main class="flex-1 p-8">

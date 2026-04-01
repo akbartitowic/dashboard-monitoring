@@ -52,10 +52,10 @@ function get_disk_usage() {
     return round(($used / $total) * 100, 2);
 }
 
-// Get project count from DB
-require_once '../config/db.php';
-$stmt = $pdo->query("SELECT COUNT(*) FROM projects");
-$project_count = $stmt->fetchColumn();
+function get_running_apps() {
+    $count = shell_exec("osascript -e 'tell application \"System Events\" to count (every process whose background only is false)'");
+    return (int)trim($count) ?: 0;
+}
 
 // Get actual uptime
 $uptime_full = shell_exec('uptime');
@@ -67,7 +67,7 @@ $stats = [
     'ram' => get_ram_usage(),
     'temp' => get_cpu_temp(),
     'disk' => get_disk_usage(),
-    'projects' => $project_count,
+    'running_apps' => get_running_apps(),
     'uptime' => $uptime
 ];
 
